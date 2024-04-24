@@ -1,0 +1,36 @@
+﻿@page "/counter"
+
+@rendermode InteractiveServer
+
+@inherits BaseClass
+
+<PageTitle>AddTask</PageTitle>
+
+<h1>AddTask</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+
+@if(Employees == null)
+{
+    <h3> loading..........</h3>
+}
+else
+{
+    <p> get</p>
+
+    @foreach (var data in Employees)
+    {
+        <p>@data.Name</p>
+    }
+
+}
+
+<button @onclick="()=>AddTask()">Add Task1</button>
+
+<HCAWeb.Client.Pages.TaskForm.TaskFormComponent taskFormDetails="@taskFormDetails"></HCAWeb.Client.Pages.TaskForm.TaskFormComponent>
+
+
+

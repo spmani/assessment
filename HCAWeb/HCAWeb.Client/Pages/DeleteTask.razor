@@ -1,0 +1,67 @@
+﻿@page "/DeleteTask/{Currentid}"
+@using Microsoft.AspNetCore.Routing
+@inject NavigationManager NavigationManager
+
+<h3>DeleteTask</h3>
+<hr />
+<h3>Are you sure want to delete this task?</h3>
+
+<form>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label>Task ID</label>
+                <label>Task ID</label>
+            </div>
+            <div class="form-group">
+                <label>Task Name</label>
+                <label>Task Name</label>
+            </div>
+            <div class="form-group">
+                <label>Task tags</label>
+                <label>Task tags</label>
+            </div>
+            <div class="form-group">
+                <label>Assigned To</label>
+                <label>AssignedTo</label>
+            </div>
+            <div class="form-group">
+                <label>Due Date</label>
+                <label>Duedate</label>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-danger" value="Delete" @onclick="@OnDeleteTask" />
+                <NavLink class="nav-link" href="TaskGrid">
+                    <input type="button" class="btn btn-warning" value="Cancel" />
+                </NavLink>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@code {
+    [Parameter]
+    public string Currentid { get; set; }
+
+    protected override void OnInitialized()
+    {
+
+    }
+
+    protected void OnDeleteTask()
+    {
+        NavigationManager.NavigateTo("TaskGrid");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("TaskGrid");
+    }
+}

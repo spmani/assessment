@@ -1,0 +1,69 @@
+﻿@page "/TaskGrid"
+@inject NavigationManager NavigationManager
+@inherits TaskGridBase
+
+@using Microsoft.Net.Http.Headers
+
+<PageTitle>Task Management</PageTitle>
+
+<h1 style="color: #333; margin-bottom: 20px;">Task Management</h1>
+<div style="border: 1px solid #ccc; border-collapse: collapse;">
+    <div class="container" style="margin-bottom: 20px;">
+        <h4>Add New Task</h4>
+        <div class="row" style="display: flex; flex-wrap: wrap;">
+            <div class="col" style="flex: 1; padding: 0 8px;">
+                <NavLink class="nav-link" href="AddTask">
+                    <button style="padding: 8px 16px; border: none; background-color: #0F0E0E; color: #fff; border-radius: 5px; cursor: pointer;">Add Task</button>
+                </NavLink>
+            </div>
+
+        </div>
+    </div>
+
+    <div>
+        <h4 class="mt-2 p-1 mb-2 ">Task List</h4>
+        <div class="table-container mt-2 p-2">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Task Name</th>
+                        <th>Tags</th>
+                        <th>Due Date</th>
+                        <th>Color</th>
+                        <th>Assigned To</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var (task, index) in Tasks.Select((value, index) => (value, index)))
+                    {
+                        <tr>
+                            <td>@(index + 1)</td>
+                            <td>@task.TaskName</td>
+                            <td>@string.Join(", ", task.Tags)</td>
+                            <td>@task.DueDate.ToShortDateString()</td>
+                            <td>@task.AssignedTo</td>
+                            <td>@task.Status</td>
+                            <td>@task.Color</td>
+                            <td>
+                                <NavLink class="nav-link" href="EditTask/1">
+                                    <button class="btn btn-warning">Update</button>
+                                </NavLink>
+                                <NavLink class="nav-link" href="DeleteTask/1">
+                                    <button class="btn btn-danger">Delete</button>
+                                </NavLink>
+
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+

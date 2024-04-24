@@ -1,0 +1,137 @@
+﻿@page "/EditTask/{id}"
+@inject NavigationManager NavigationManager
+@inherits TaskEditBase
+@rendermode InteractiveServer
+
+<h3>EditTask</h3>
+<hr />
+
+@foreach (var task in Tasks1)
+{
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label for="TaskName" class="control-label">Task Name</label>
+                <input form="TaskName" class="form-control" @bind="task.TaskName" />
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="form-group">
+                <label for="TaskTags" class="control-label">Task Tags</label>
+                <input type="text" class="form-control" @bind="task.TaskTagsAsString" />
+                <small id="taskTagsHelp" class="form-text text-muted">Enter tags separated by commas.</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label for="AssignTo" class="control-label">Assigned To</label>
+                <select @bind="task.AssignTo" class="form-control">
+                    <option value="">Select Tags</option>
+                    @foreach (var tag in AssignOptions)
+                    {
+                        <option value="@tag">@tag</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="form-group">
+                <label for="NewTaskDueDate" class="control-label">Due Date</label>
+                <input type="date" form="NewTaskDueDate" class="form-control" @bind="task.NewTaskDueDate" />
+            </div>
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-header">
+            Activity
+            <button class="btn btn-danger btn-sm float-end" @onclick="() => DeleteTask(task)">Delete Task</button>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="ActivityDate" class="control-label">Activity Date</label>
+                            <input type="date" id="ActivityDate" class="form-control" @bind="NewTaskDueDate" />
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="ActivityDescription" class="control-label">Activity Description</label>
+                            <input type="text" id="ActivityDescription" class="form-control" @bind="ActivityDescription" />
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="DoneBy" class="control-label">Done By</label>
+                            <select id="DoneBy" @bind="DoneBy" class="form-control">
+                                <option value="">Select</option>
+                                @foreach (var person in People)
+                                {
+                                    <option value="@person">@person</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+<button class="btn btn-primary mt-4" @onclick="AddActivity">Add Activity</button>
+@foreach (var activity in Activities)
+{
+    <div class="card mt-2">
+        <div class="card-header">
+            Activity
+            <button class="btn btn-danger btn-sm float-end" @onclick="() => DeleteActivity(activity)">Delete Activity</button>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="ActivityDate" class="control-label">Activity Date</label>
+                            <input type="date" id="ActivityDate" class="form-control" @bind="activity.ActivityDate" />
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="ActivityDescription" class="control-label">Activity Description</label>
+                            <input type="text" id="ActivityDescription" class="form-control" @bind="activity.ActivityDescription" />
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="DoneBy" class="control-label">Done By</label>
+                            <select id="DoneBy" @bind="activity.DoneBy" class="form-control">
+                                <option value="">Select</option>
+                                @foreach (var person in People)
+                                {
+                                    <option value="@person">@person</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="form-group">
+            <input type="button" class="btn btn-primary" value="Update" @onclick="UpdateTask" />
+            @* <input type="button" class="btn btn-warning" value="Cancel" @onclick="Cancel" /> *@
+        </div>
+    </div>
+</div>
+
+

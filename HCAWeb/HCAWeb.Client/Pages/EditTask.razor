@@ -1,0 +1,111 @@
+﻿@* 
+
+@* @code {
+    private List<TaskModel> Tasks = new List<TaskModel>();
+    private List<string> TagOptions = new List<string> { "household", "weekly stuff", "work", "personal" };
+    private List<string> AssignOptions = new List<string> { "bala", "john", "alice" };
+    private string NewTaskName { get; set; }
+    private string NewTaskTags { get; set; }
+    private string AssignTo { get; set; }
+    private DateTime NewTaskDueDate { get; set; } = DateTime.Today;
+
+    public class TaskModel
+    {
+        public int Id { get; set; }
+        public string TaskName { get; set; }
+        public List<string> Tags { get; set; }
+        public DateTime DueDate { get; set; }
+        public string Color { get; set; }
+        public string AssignedTo { get; set; }
+        public string Status { get; set; }
+
+        public TaskModel()
+        {
+            Tags = new List<string>();
+        }
+    }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override void OnInitialized()
+    {
+
+    }
+
+    protected void UpdateTask()
+    {
+        NavigationManager.NavigateTo("TaskGrid");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("TaskGrid");
+    }
+} *@
+
+@* @code {
+    private List<TaskModel> Tasks = new List<TaskModel>(); // Assuming this list contains existing tasks
+    private List<string> TagOptions = new List<string> { "household", "weekly stuff", "work", "personal" };
+    private List<string> AssignOptions = new List<string> { "bala", "john", "alice" };
+    private string NewTaskName { get; set; }
+    private string NewTaskTags { get; set; }
+    private string AssignTo { get; set; }
+    private DateTime NewTaskDueDate { get; set; } = DateTime.Today;
+    private TaskModel TaskToUpdate; // To store the task being updated
+
+    public class TaskModel
+    {
+        public int Id { get; set; }
+        public string TaskName { get; set; }
+        public List<string> Tags { get; set; }
+        public DateTime DueDate { get; set; }
+        public string Color { get; set; }
+        public string AssignedTo { get; set; }
+        public string Status { get; set; }
+
+        public TaskModel()
+        {
+            Tags = new List<string>();
+        }
+    }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // Retrieve task details based on Id parameter
+        TaskToUpdate = Tasks.FirstOrDefault(t => t.Id.ToString() == Id);
+
+        // Populate UI fields with task details
+        if (TaskToUpdate != null)
+        {
+            NewTaskName = TaskToUpdate.TaskName;
+            NewTaskTags = string.Join(",", TaskToUpdate.Tags);
+            AssignTo = TaskToUpdate.AssignedTo;
+            NewTaskDueDate = TaskToUpdate.DueDate;
+        }
+    }
+
+    protected void UpdateTask()
+    {
+        // Update the task details
+        if (TaskToUpdate != null)
+        {
+            TaskToUpdate.TaskName = NewTaskName;
+            TaskToUpdate.Tags = !string.IsNullOrEmpty(NewTaskTags) ? NewTaskTags.Split(',').ToList() : new List<string>();
+            TaskToUpdate.AssignedTo = AssignTo;
+            TaskToUpdate.DueDate = NewTaskDueDate;
+
+            // Navigate back to the task grid
+            NavigationManager.NavigateTo("TaskGrid");
+        }
+    }
+
+    void Cancel()
+    {
+        // Navigate back to the task grid without making any changes
+        NavigationManager.NavigateTo("TaskGrid");
+    }
+} *@

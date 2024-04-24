@@ -1,0 +1,31 @@
+﻿@page "/"
+@inherits BaseClass
+@rendermode InteractiveServer
+
+
+<PageTitle>Home</PageTitle>
+
+@if(Employees == null)
+{
+    <h3> loading..........</h3>
+}
+else
+{
+    <p> get</p>
+
+    @foreach (var data in Employees)
+    {
+        <p>@data.Name</p>
+    }
+
+}
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+<button @onclick="AddTask">Add Task1</button>
+
+
+<HCAUI.Components.Pages.TaskForm.TaskFormComponent >  </HCAUI.Components.Pages.TaskForm.TaskFormComponent>
+
+

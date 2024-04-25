@@ -31,14 +31,24 @@
     <div class="row">
         <div class="col">
             <div class="form-group">
-                <label for="AssignTo" class="control-label">Assigned To</label>
-                <select @bind="task.AssignTo" class="form-control">
-                    <option value="">Select Tags</option>
-                    @foreach (var tag in AssignOptions)
-                    {
-                        <option value="@tag">@tag</option>
-                    }
-                </select>
+                <label for="AssignTo" class="control-label">Assigned To <span style="color:red">*</span></label>
+
+                @if (Employees != null)
+                {
+                    <select id="AssignTo" @bind="task.AssignTo" class="form-control">
+                        <option value=0 disabled>Select</option>
+                        @foreach (var person in Employees)
+                        {
+                            <option value="@person.ID">@person.Name</option>
+                        }
+                    </select>
+                   
+                }
+                else
+                {
+                    <p>Loading Employee details...</p>
+                }
+
             </div>
         </div>
 
@@ -71,14 +81,21 @@
                     </div>
                     <div class="col">
                         <div class="form-group">
-                            <label for="DoneBy" class="control-label">Done By</label>
-                            <select id="DoneBy" @bind="DoneBy" class="form-control">
-                                <option value="">Select</option>
-                                @foreach (var person in People)
-                                {
-                                    <option value="@person">@person</option>
-                                }
-                            </select>
+                            <label for="DoneBy" class="control-label">Done By <span style="color:red">*</span></label>
+                            @if(Employees !=null){
+                                <select id="DoneBy" @bind="DoneBy" class="form-control">
+                                    <option value="">Select</option>
+                                    @foreach (var person in Employees)
+                                    {
+                                        <option value="@person.ID">@person.Name</option>
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <p>Loading employee details...</p>
+                            }
+                            
                         </div>
                     </div>
                 </div>
@@ -112,7 +129,7 @@
                     </div>
                     <div class="col">
                         <div class="form-group">
-                            <label for="DoneBy" class="control-label">Done By</label>
+                            <label for="DoneBy" class="control-label">Done By <span style="color:red">*</span></label>
                             <select id="DoneBy" @bind="activity.DoneBy" class="form-control">
                                 <option value="">Select</option>
                                 @foreach (var person in People)

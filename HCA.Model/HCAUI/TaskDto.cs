@@ -17,4 +17,9 @@ namespace HCA.Model.HCAUI
     {
         public string ActivitDescription { get; set; } = string.Empty;
     }
+    public class UiResponse
+    {
+        public string message { get; set; }
+        public int status { get; set; }
+    }
 }

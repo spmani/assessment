@@ -6,6 +6,8 @@ namespace HCAWeb.Client.Pages.TaskGrid
 {
     public class TaskGridBase : ComponentBase
     {
+        [Inject]
+        protected NavigationManager navigationManager {  get; set; }
         protected List<TaskModel> Tasks = new List<TaskModel>();
         protected List<string> TagOptions = new List<string> { "household", "weekly stuff", "work", "personal" };
         protected List<string> AssignOptions = new List<string> { "bala", "john", "alice" };
@@ -19,10 +21,12 @@ namespace HCAWeb.Client.Pages.TaskGrid
 
 
 
-        // protected void NavigateToAddTask()
-        // {
-        //     NavigationManager.NavigateTo("/AddTask");
-        // }
+
+
+        protected void NavigateToAddTask()
+        {
+            navigationManager.NavigateTo("/AddTask",true);
+        }
 
         protected override void OnInitialized()
         {
@@ -60,30 +64,36 @@ namespace HCAWeb.Client.Pages.TaskGrid
             var data = taskService.GetTasks();
 
             Tasks = new List<TaskModel>();
-
-            foreach (var taskData in data)
+            if(data != null)
             {
-                var tags = taskData.Tags.Split(',').ToList(); // Split tags string into a list
-
-                // Parse due date string to DateTime
-                DateTime dueDate = taskData.Duedate.GetValueOrDefault();
-                if (taskData.Duedate.HasValue)
+                foreach (var taskData in data)
                 {
-                    dueDate = taskData.Duedate.Value;
+                    var tags = taskData.Tags.Split(',').ToList(); // Split tags string into a list
+
+                    // Parse due date string to DateTime
+                    DateTime dueDate = taskData.Duedate.GetValueOrDefault();
+                    if (taskData.Duedate.HasValue)
+                    {
+                        dueDate = taskData.Duedate.Value;
+                    }
+
+                    // Create a new TaskModel object and add it to the Tasks list
+                    Tasks.Add(new TaskModel
+                    {
+                        Id = taskData.Id,
+                        TaskName = taskData.TaskName,
+                        Tags = tags,
+                        DueDate = dueDate,
+                        Color = "Pending",
+                        AssignedTo = taskData.assignedTo,
+                        Status = taskData.status
+                    });
                 }
 
-                // Create a new TaskModel object and add it to the Tasks list
-                Tasks.Add(new TaskModel
-                {
-                    Id = taskData.Id,
-                    TaskName = taskData.TaskName,
-                    Tags = tags,
-                    DueDate = dueDate,
-                    Color = "Blue",
-                    AssignedTo = taskData.assignedTo,
-                    Status = taskData.status
-                });
             }
+
+
+
         }
 
         protected async Task AddTask()

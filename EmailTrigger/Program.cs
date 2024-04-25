@@ -18,6 +18,7 @@ class Program
             configure.SetServiceName("MyWindowServiceWithTopshelf");
             configure.SetDisplayName("MyWindowServiceWithTopshelf");
             configure.SetDescription("My .Net windows service with Topshelf");
+
         });
     }
 }

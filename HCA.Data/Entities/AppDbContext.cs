@@ -49,21 +49,36 @@ namespace WebAPI.Data
             modelBuilder.Entity<HCA_EmployeeDetails>().HasData(new HCA_EmployeeDetails
             {
                 Id = 1,
-                Name="Altrocks1",
-                Email="Ponnusamy.r@altrockstech.com"
-            }
-
-           );
+                Name= "Senthil Prabhu",
+                Email= "senthil.prabhu@altrockstech.com"
+            });
 
             modelBuilder.Entity<HCA_EmployeeDetails>().HasData(new HCA_EmployeeDetails
             {
                 Id = 2,
-                Name = "Altrocks2",
+                Name = "Altrocks",
                 Email = "bharath.p@altrockstech.com"
-            }
+            });
 
-          );
-           
+            modelBuilder.Entity<HCA_EmployeeDetails>().HasData(new HCA_EmployeeDetails
+            {
+                Id = 3,
+                Name = "Adithya",
+                Email = "bharath.p@altrockstech.com"
+            });
+            modelBuilder.Entity<HCA_EmployeeDetails>().HasData(new HCA_EmployeeDetails
+            {
+                Id = 4,
+                Name = "Vishnu",
+                Email = "bharath.p@altrockstech.com"
+            });
+            modelBuilder.Entity<HCA_EmployeeDetails>().HasData(new HCA_EmployeeDetails
+            {
+                Id = 5,
+                Name = "Sasi",
+                Email = "bharath.p@altrockstech.com"
+            });
+
         }
        }
 }

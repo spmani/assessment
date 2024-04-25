@@ -1,4 +1,5 @@
 ﻿using HCA.Model;
+using HCA.Model.HCAUI;
 using HCAWeb.Client.Services.Interface;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
@@ -22,7 +23,7 @@ namespace HCAWeb.Client.Services
             _logger = logger;
             _httpClientService = new HttpClientService(httpClient, logger);
         }
-        public bool AddTask(TaskRequest taskRequest)
+        public UiResponse AddTask(TaskRequest taskRequest)
         {
             try
             {
@@ -37,9 +38,6 @@ namespace HCAWeb.Client.Services
 
                 };
 
-
-
-
                 using (var httpClient = _httpClient.SendAsync(httpRequestMessage))
                 {
                     var response = httpClient.Result;
@@ -48,22 +46,24 @@ namespace HCAWeb.Client.Services
                         var responseBody = response.Content.ReadAsStringAsync().Result;
                         _logger.LogInformation($"Api service call completed:{responseBody} ");
 
-                        //var resultData = JsonConvert.DeserializeObject<T>(responseBody);
+                        var resultData = JsonConvert.DeserializeObject<UiResponse>(responseBody);
 
-                        //return resultData == null ? new T() : resultData;
+                        return resultData;
                     }
                     else
                     {
                         _logger.LogError($"C4C Call Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return new UiResponse { status = -1, message = "Something Went Wrong!" };
+
                     }
                 }
             }
             catch(Exception ex)
             {
-                return false;   
+                return new UiResponse{ status=-1,message="Something Went Wrong!"};   
             }
            
-            return true;
+           
             
         }
 

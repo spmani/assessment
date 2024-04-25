@@ -4,42 +4,51 @@ using HCA.Model.HCAUI;
 using HCAWeb.Client.Services.Interface;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
+using CurrieTechnologies.Razor.SweetAlert2;
+using HCAWeb.Client.Services;
 
 
 namespace HCAWeb.Client.Pages.TaskForm
 {
     public class TaskFormBase:ComponentBase
     {
-        //[Parameter]
-        //public IEnumerable<TaskDto> formDetails { get; set; }
+        [Inject]
+        protected SweetAlertService sweetAlertService { get; set; }
 
         [Inject]
         public ITaskService taskService { get; set; }
-        public IList<string> AssignOptions = ["bala", "john", "alice"];
+        
+        [Inject]
+        public NavigationManager navigationManager { get; set; }
+
+      
         public List<TaskModel1> Tasks1 = new List<TaskModel1>() { new TaskModel1() };
 
-        protected List<TaskModel> Tasks = new List<TaskModel>();
-        //protected IList<TaskModel1> Tasks1 = new IList<TaskModel1>() { new TaskModel1() };
+       
         protected List<string> TagOptions = new List<string> { "household", "weekly stuff", "work", "personal" };
        
         protected string NewTaskName { get; set; }
         protected string NewTaskTags { get; set; }
-        protected string AssignTo { get; set; }
+        protected int AssignTo { get; set; }
         protected DateTime NewTaskDueDate { get; set; } = DateTime.Today;
         protected DateTime ActivityDate { get; set; } = DateTime.Today;
         protected string ActivityDescription { get; set; }
         protected string DoneBy { get; set; }
         protected List<string> People { get; set; } = new List<string> { "Person 1", "Person 2", "Person 3" };
+
+        protected IEnumerable<EmployeeDto> Employees { get; set; } 
+
         protected List<string> SelectedTags { get; set; } = new List<string>();
         protected List<Activity> Activities { get; set; } = new List<Activity>();
         protected int Count { get; set; }
-
+        [Inject]
+        public IHCAMaster hCAMaster { get; set; }
 
         public class TaskModel1
         {
             public string TaskName { get; set; }
             //public string TaskTags { get; set; }
-            public string AssignTo { get; set; }
+            public int AssignTo { get; set; } = 0;
             public DateTime NewTaskDueDate { get; set; }
             public List<Activity> Activities { get; set; } = new List<Activity>();
 
@@ -56,7 +65,22 @@ namespace HCAWeb.Client.Pages.TaskForm
 
             public List<string> TaskTags { get; protected set; } = new List<string>();
         }
+        
+        public class TaskActivityModel
+        {
+            public DateTime ActivityDate { get; set; }
+            public int DoneBy { get; set; }
+            public string ActivityDescription { get; set; }
+        }
 
+
+
+        protected override async Task OnInitializedAsync()
+        {
+
+            Employees = await hCAMaster.GetAllEmployee();
+
+        }
         protected void AddTask()
         {
             var data = new TaskModel1();
@@ -82,7 +106,7 @@ namespace HCAWeb.Client.Pages.TaskForm
         {
             public DateTime ActivityDate { get; set; }
             public string ActivityDescription { get; set; }
-            public string DoneBy { get; set; }
+            public int DoneBy { get; set; }
         }
 
 
@@ -95,7 +119,6 @@ namespace HCAWeb.Client.Pages.TaskForm
                 SelectedTags.Add(tag);
         }
 
-        //  protected string NewTaskTags { get; set; }
 
         protected List<string> GetTagsFromString(string tagsString)
         {
@@ -106,25 +129,12 @@ namespace HCAWeb.Client.Pages.TaskForm
         }
 
 
-        public class TaskModel
-        {
-            public string TaskName { get; set; }
-            public List<string> Tags { get; set; }
-            public DateTime DueDate { get; set; }
-            public string AssignedTo { get; set; }
-        }
-
-        public class TaskActivityModel
-        {
-            public DateTime ActivityDate { get; set; }
-            public int DoneBy { get; set; }
-            public string ActivityDescription { get; set; }
-        }
-
+      
 
 
         public async Task SaveTask()
         {
+            bool isVaild = true;
             // Create a list to store activity mappings
             var activityMappings = new List<TaskActivityMappingRequest>();
 
@@ -133,7 +143,7 @@ namespace HCAWeb.Client.Pages.TaskForm
                 activityMappings.Add(new TaskActivityMappingRequest
                 {
                     ActivityDate = activity.ActivityDate,
-                    DoneBy = 1,
+                    DoneBy = activity.DoneBy,
                     Activitydescription = activity.ActivityDescription,
                     IsActive = true,
                     CreateDate = DateTime.Now,
@@ -148,6 +158,10 @@ namespace HCAWeb.Client.Pages.TaskForm
 
             foreach (var task in Tasks1)
             {
+                if (string.IsNullOrEmpty(task.AssignTo.ToString()))
+                {
+                    isVaild = false;
+                }
                 tagMappings.Add(new TaskTagMappingRequest
                 {
                     TagsName = task.TaskTagsAsString,
@@ -161,7 +175,7 @@ namespace HCAWeb.Client.Pages.TaskForm
                 {
                     TaskName = task.TaskName,
                     Due_date = task.NewTaskDueDate,
-                    EmployeeId = 1,
+                    EmployeeId = task.AssignTo,
                     StatusId = 1,
                     IsActive = true,
                     CreateDate = DateTime.Now,
@@ -181,20 +195,80 @@ namespace HCAWeb.Client.Pages.TaskForm
 
             if (taskRequest != null)
             {
-                var response =  taskService.AddTask(taskRequest); // Assuming AddTask is an asynchronous method
-
-                if (response != null)
+                if (isVaild)
                 {
-                    if (response == true)
+                    var response = taskService.AddTask(taskRequest); // Assuming AddTask is an asynchronous method
+
+                    if (response != null)
                     {
-                        Console.WriteLine("Insert success!");
+                        if (response.status == 0)
+                        {
+                            var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+                            {
+                                Title = response.message.ToString(),
+                                Text = "",
+                                Icon = SweetAlertIcon.Success,
+                                ShowCancelButton = false,
+                                ConfirmButtonText = "OK",
+                                CancelButtonText = "Cancel",
+
+
+                            });
+                            if (!string.IsNullOrEmpty(result.Value))
+                            {
+                                navigationManager.NavigateTo("../", true);
+                            }
+                        }
+                        else if (response.status == -1)
+                        {
+                            var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+                            {
+                                Title = response.message.ToString(),
+                                Text = "Please try after some time!",
+                                Icon = SweetAlertIcon.Warning,
+                                ShowCancelButton = true,
+                                ConfirmButtonText = "OK",
+                                CancelButtonText = "Cancel",
+
+
+                            });
+                            if (!string.IsNullOrEmpty(result.Value))
+                            {
+                                navigationManager.NavigateTo("../", true);
+                            }
+                        }
+                        else
+                        {
+                            var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+                            {
+                                Title = response.message.ToString(),
+                                Text = "Please try after some time!",
+                                Icon = SweetAlertIcon.Info,
+                                ShowCancelButton = true,
+                                ConfirmButtonText = "OK",
+                                CancelButtonText = "Cancel",
+                            });
+                            if (!string.IsNullOrEmpty(result.Value))
+                            {
+                                navigationManager.NavigateTo("../", true);
+                            }
+                        }
                     }
-                    else if (response == false)
-                    {
-                        Console.WriteLine("Insert failed!");
-                    }
+
                 }
-            }
+                else
+                {
+                    var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+                    {
+                        Title = "Please fill All required field",
+                        Text = "",
+                        Icon = SweetAlertIcon.Info,
+                        ShowCancelButton = false,
+                        ConfirmButtonText = "OK"
+                        
+                    });
+                }
+                 }
         }
 
     }

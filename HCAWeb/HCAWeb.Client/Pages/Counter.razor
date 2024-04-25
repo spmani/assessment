@@ -4,11 +4,22 @@
 
 @inherits BaseClass
 
+@using Microsoft.Fast.Components.FluentUI
+
+
+
 <PageTitle>AddTask</PageTitle>
 
-<h1>AddTask</h1>
+<FluentCard>
+    <h2>Hello World!</h2>
+    <FluentButton Appearance="@Appearance.Accent">Click Me</FluentButton>
+</FluentCard>
 
-<p role="status">Current count: @currentCount</p>
+<h1>AddTask</h1>
+<button @onclick="()=>AddTask()">Add Task1</button>
+
+
+@* <p role="status">Current count: @currentCount</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
@@ -28,9 +39,8 @@ else
 
 }
 
-<button @onclick="()=>AddTask()">Add Task1</button>
 
 <HCAWeb.Client.Pages.TaskForm.TaskFormComponent taskFormDetails="@taskFormDetails"></HCAWeb.Client.Pages.TaskForm.TaskFormComponent>
 
-
+ *@
 

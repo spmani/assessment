@@ -1,4 +1,5 @@
 
+using CurrieTechnologies.Razor.SweetAlert2;
 using HCAWeb.Client.Services;
 using HCAWeb.Client.Services.Interface;
 using HCAWeb.Components;
@@ -15,6 +16,7 @@ builder.Services.AddScoped(sp =>
     {
         BaseAddress = new Uri("https://localhost:7213/")
     });
+builder.Services.AddSweetAlert2();
 builder.Services.AddScoped<IHCAMaster, HCAMaster>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 
